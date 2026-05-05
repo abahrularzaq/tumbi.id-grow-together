@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm as useFormspree } from "@formspree/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -10,16 +9,12 @@ import { PostSubmitSurvey } from "./PostSubmitSurvey";
 import { incrementSignupCount, SignupCounter } from "./SignupCounter";
 
 const waitlistEmailKey = "tumbi_waitlist_email";
-const formspreeId = import.meta.env.VITE_FORMSPREE_ID as string | undefined;
+const gasWebAppUrl = import.meta.env.VITE_GAS_WEBAPP_URL as string | undefined;
 
-type FormspreePayload = {
-  email: string;
-  plan: WaitlistFormData["plan"];
-  childAge: WaitlistFormData["childAge"];
-  biggestConcern?: string;
-  source: "final_cta";
-  timestamp: string;
-  userAgent: string;
+type GasSubmitResponse = {
+  ok?: boolean;
+  error?: string;
+  message?: string;
 };
 
 export function FinalCTA() {
@@ -27,12 +22,13 @@ export function FinalCTA() {
   const [submittedData, setSubmittedData] = useState<WaitlistFormData | null>(null);
   const [storedEmail, setStoredEmail] = useState<string | null>(null);
   const [hasTrackedFormStart, setHasTrackedFormStart] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
   const { trackCTAClick, trackFormStart, trackPlanSelected, trackAgeSelected, trackFormSubmit } =
     useAnalytics();
-  const [formspreeState, submitToFormspree] = useFormspree<FormspreePayload>(formspreeId ?? "");
   const {
     register,
     handleSubmit,
+    reset,
     setValue,
     watch,
     formState: { errors, isSubmitting },
@@ -77,17 +73,21 @@ export function FinalCTA() {
 
   async function onSubmit(data: WaitlistFormData) {
     try {
-      if (formspreeState.submitting || isSubmitting) {
+      if (isSubmitting) {
         return;
       }
-      if (!formspreeId) {
-        throw new Error("formspree_not_configured");
+      if (!gasWebAppUrl) {
+        throw new Error("gas_not_configured");
       }
       if (!navigator.onLine) {
         throw new Error("offline");
       }
+      if (honeypot.trim()) {
+        // Honeypot filled likely indicates bot traffic.
+        return;
+      }
       const submittedAt = new Date().toISOString();
-      await submitToFormspree({
+      const payload = JSON.stringify({
         email: data.email,
         plan: data.plan,
         childAge: data.childAge,
@@ -95,7 +95,40 @@ export function FinalCTA() {
         source: "final_cta",
         timestamp: submittedAt,
         userAgent: navigator.userAgent,
+        website: honeypot,
       });
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 15000);
+      const response = await fetch(gasWebAppUrl, {
+        method: "POST",
+        body: payload,
+        headers: {
+          "Content-Type": "text/plain;charset=UTF-8",
+        },
+        signal: controller.signal,
+      }).finally(() => window.clearTimeout(timeoutId));
+      if (!response.ok) {
+        throw new Error("gas_submit_failed");
+      }
+      let result: GasSubmitResponse | null = null;
+      try {
+        result = (await response.json()) as GasSubmitResponse;
+      } catch {
+        result = null;
+      }
+      if (result && result.ok === false) {
+        const serverDetail =
+          typeof result.message === "string" && result.message.trim()
+            ? result.message.trim().slice(0, 220)
+            : "";
+        toast.error(
+          serverDetail
+            ? `Gagal menyimpan pendaftaran: ${serverDetail}`
+            : "Gagal menyimpan ke server. Cek Google Apps Script (Spreadsheet / izin Mail) lalu deploy ulang Web App.",
+          { position: "bottom-center", duration: 9000 }
+        );
+        return;
+      }
       appendSubmission({
         email: data.email,
         plan: data.plan,
@@ -119,10 +152,26 @@ export function FinalCTA() {
       setStoredEmail(data.email);
       setSubmittedData(data);
       setSubmitted(true);
-    } catch {
+    } catch (error) {
       toast.error("Gagal mendaftar. Coba lagi ya!", { position: "bottom-center" });
     }
   }
+
+  const resetForNewEmail = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(waitlistEmailKey);
+    }
+    setSubmitted(false);
+    setStoredEmail(null);
+    setSubmittedData(null);
+    setHasTrackedFormStart(false);
+    reset({
+      email: "",
+      plan: "premium",
+      childAge: undefined,
+      biggestConcern: "",
+    });
+  };
 
   const selectedSummary =
     submittedData && submitted
@@ -259,12 +308,22 @@ export function FinalCTA() {
               )}
             </div>
 
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={honeypot}
+              onChange={(event) => setHoneypot(event.target.value)}
+              className="hidden"
+              aria-hidden="true"
+            />
+
             <button
               type="submit"
-              disabled={isSubmitting || formspreeState.submitting}
+              disabled={isSubmitting}
               className="w-full bg-terracotta text-white font-bold py-4 rounded-md hover:opacity-90 transition mt-2 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isSubmitting || formspreeState.submitting ? (
+              {isSubmitting ? (
                 <>
                   <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                   Mendaftar...
@@ -342,15 +401,14 @@ export function FinalCTA() {
               </p>
             </div>
           )}
-          <a
-            href="https://instagram.com/tumbi.id"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex w-full justify-center border border-amber text-amber font-semibold py-3 rounded-md hover:bg-amber/10 transition"
-          >
-            Ikuti Instagram @tumbi.id untuk tips parenting
-          </a>
           <p className="text-xs text-muted-foreground mt-4">Cek email kamu untuk konfirmasi</p>
+          <button
+            type="button"
+            onClick={resetForNewEmail}
+            className="mt-3 inline-flex w-full justify-center border border-border text-foreground font-semibold py-3 rounded-md hover:bg-surface transition"
+          >
+            Daftar dengan email lain
+          </button>
           {storedEmail && (
             <PostSubmitSurvey
               email={storedEmail}

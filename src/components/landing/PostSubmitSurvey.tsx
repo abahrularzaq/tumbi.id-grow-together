@@ -19,6 +19,7 @@ interface PostSubmitSurveyProps {
 }
 
 export function PostSubmitSurvey({ email, plan, childAge }: PostSubmitSurveyProps) {
+  const gasWebAppUrl = import.meta.env.VITE_GAS_WEBAPP_URL as string | undefined;
   const [isVisible, setIsVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<(typeof SURVEY_OPTIONS)[number] | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -28,17 +29,35 @@ export function PostSubmitSurvey({ email, plan, childAge }: PostSubmitSurveyProp
     if (typeof window === "undefined") return;
     const existing = window.localStorage.getItem(voteStorageKey);
     if (existing) {
-      setIsSubmitted(true);
+      try {
+        const parsed = JSON.parse(existing) as {
+          email?: string;
+          featureVote?: string;
+        };
+
+        // Only consider the survey "already submitted" if it matches current email.
+        // This lets different users/emails (or your test flow) still see the survey.
+        if (String(parsed.email ?? "") === email && typeof parsed.featureVote === "string") {
+          setIsSubmitted(true);
+          setIsVisible(true);
+          return;
+        }
+      } catch {
+        // If stored value is corrupted/unparseable, fall back to showing survey.
+      }
+
+      setIsSubmitted(false);
       setIsVisible(true);
       return;
     }
-
-    const timer = window.setTimeout(() => setIsVisible(true), 1500);
-    return () => window.clearTimeout(timer);
+    // Tampilkan survey langsung setelah submit sukses.
+    setIsVisible(true);
   }, []);
 
   const submitVote = () => {
     if (!selectedOption || typeof window === "undefined") return;
+
+    const timestamp = Date.now();
 
     window.localStorage.setItem(
       voteStorageKey,
@@ -47,10 +66,31 @@ export function PostSubmitSurvey({ email, plan, childAge }: PostSubmitSurveyProp
         plan,
         childAge,
         featureVote: selectedOption,
-        timestamp: Date.now(),
+        timestamp,
       })
     );
     setLatestFeatureVote(email, selectedOption);
+
+    if (gasWebAppUrl) {
+      const payload = JSON.stringify({
+        email,
+        featureVote: selectedOption,
+        source: "feature_vote",
+        timestamp: new Date(timestamp).toISOString(),
+        userAgent: navigator.userAgent,
+      });
+
+      fetch(gasWebAppUrl, {
+        method: "POST",
+        body: payload,
+        headers: {
+          "Content-Type": "text/plain;charset=UTF-8",
+        },
+      }).catch(() => {
+        // Silent fail; local analytics & admin page still work.
+      });
+    }
+
     setIsSubmitted(true);
   };
 

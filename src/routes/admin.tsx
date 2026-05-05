@@ -113,6 +113,15 @@ function AdminPage() {
     URL.revokeObjectURL(url);
   };
 
+  const handleLogout = () => {
+    setIsAuthed(false);
+    setPasswordInput("");
+    setAuthError("");
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(authSessionKey);
+    }
+  };
+
   if (!isAuthed) {
     return (
       <main className="min-h-screen bg-background text-foreground p-6">
@@ -159,6 +168,13 @@ function AdminPage() {
               className="bg-foreground text-background rounded-md px-3 py-2 text-sm font-semibold"
             >
               Export CSV
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="border border-border rounded-md px-3 py-2 text-sm"
+            >
+              Logout
             </button>
           </div>
         </div>
