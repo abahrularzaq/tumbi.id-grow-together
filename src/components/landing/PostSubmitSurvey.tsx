@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAnalytics } from "../../hooks/useAnalytics";
 import type { WaitlistFormData } from "../../lib/schemas";
+import { setLatestFeatureVote } from "../../lib/submissions";
 
 const voteStorageKey = "tumbi_feature_vote";
 
@@ -49,6 +50,7 @@ export function PostSubmitSurvey({ email, plan, childAge }: PostSubmitSurveyProp
         timestamp: Date.now(),
       })
     );
+    setLatestFeatureVote(email, selectedOption);
     setIsSubmitted(true);
   };
 

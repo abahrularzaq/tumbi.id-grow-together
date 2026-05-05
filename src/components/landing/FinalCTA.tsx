@@ -1,13 +1,26 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm as useFormspree } from "@formspree/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAnalytics } from "../../hooks/useAnalytics";
 import { waitlistSchema, type WaitlistFormData } from "../../lib/schemas";
+import { appendSubmission } from "../../lib/submissions";
 import { PostSubmitSurvey } from "./PostSubmitSurvey";
 import { incrementSignupCount, SignupCounter } from "./SignupCounter";
 
 const waitlistEmailKey = "tumbi_waitlist_email";
+const formspreeId = import.meta.env.VITE_FORMSPREE_ID as string | undefined;
+
+type FormspreePayload = {
+  email: string;
+  plan: WaitlistFormData["plan"];
+  childAge: WaitlistFormData["childAge"];
+  biggestConcern?: string;
+  source: "final_cta";
+  timestamp: string;
+  userAgent: string;
+};
 
 export function FinalCTA() {
   const [submitted, setSubmitted] = useState(false);
@@ -16,6 +29,7 @@ export function FinalCTA() {
   const [hasTrackedFormStart, setHasTrackedFormStart] = useState(false);
   const { trackCTAClick, trackFormStart, trackPlanSelected, trackAgeSelected, trackFormSubmit } =
     useAnalytics();
+  const [formspreeState, submitToFormspree] = useFormspree<FormspreePayload>(formspreeId ?? "");
   const {
     register,
     handleSubmit,
@@ -63,10 +77,34 @@ export function FinalCTA() {
 
   async function onSubmit(data: WaitlistFormData) {
     try {
+      if (formspreeState.submitting || isSubmitting) {
+        return;
+      }
+      if (!formspreeId) {
+        throw new Error("formspree_not_configured");
+      }
       if (!navigator.onLine) {
         throw new Error("offline");
       }
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const submittedAt = new Date().toISOString();
+      await submitToFormspree({
+        email: data.email,
+        plan: data.plan,
+        childAge: data.childAge,
+        biggestConcern: data.biggestConcern?.trim() || undefined,
+        source: "final_cta",
+        timestamp: submittedAt,
+        userAgent: navigator.userAgent,
+      });
+      appendSubmission({
+        email: data.email,
+        plan: data.plan,
+        childAge: data.childAge,
+        biggestConcern: data.biggestConcern?.trim() || undefined,
+        featureVote: undefined,
+        timestamp: submittedAt,
+        source: "final_cta",
+      });
       if (typeof window !== "undefined") {
         window.localStorage.setItem(waitlistEmailKey, data.email);
         incrementSignupCount();
@@ -223,10 +261,10 @@ export function FinalCTA() {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || formspreeState.submitting}
               className="w-full bg-terracotta text-white font-bold py-4 rounded-md hover:opacity-90 transition mt-2 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isSubmitting ? (
+              {isSubmitting || formspreeState.submitting ? (
                 <>
                   <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                   Mendaftar...
