@@ -1,4 +1,12 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { TRUST_BADGES } from "../../constants/landingData";
+import { waitlistSchema } from "../../lib/schemas";
+
+const waitlistEmailKey = "tumbi_waitlist_email";
+const heroEmailSchema = waitlistSchema.pick({ email: true });
+type HeroEmailData = { email: string };
 
 function PhoneMockup() {
   return (
@@ -86,6 +94,29 @@ function PhoneMockup() {
 }
 
 export function Hero() {
+  const [heroSubmitted, setHeroSubmitted] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<HeroEmailData>({
+    resolver: zodResolver(heroEmailSchema),
+    defaultValues: { email: "" },
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setHeroSubmitted(Boolean(window.localStorage.getItem(waitlistEmailKey)));
+  }, []);
+
+  async function onSubmit(data: HeroEmailData) {
+    if (typeof window === "undefined") return;
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    window.localStorage.setItem(waitlistEmailKey, data.email);
+    window.dispatchEvent(new Event("tumbi-waitlist-updated"));
+    setHeroSubmitted(true);
+  }
+
   return (
     <section id="top" className="relative min-h-[100svh] flex items-center pt-10 pb-16">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-12 items-center w-full">
@@ -121,6 +152,36 @@ export function Hero() {
                 {b.icon} {b.label}
               </span>
             ))}
+          </div>
+          <div className="mt-6 max-w-md mx-auto lg:mx-0">
+            {heroSubmitted ? (
+              <p className="inline-flex items-center gap-2 text-sm font-semibold text-sage">
+                <span className="w-5 h-5 rounded-full bg-sage/20 grid place-items-center">✓</span> Berhasil!
+                Cek email kamu.
+              </p>
+            ) : (
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col sm:flex-row gap-3 w-full"
+              >
+                <div className="flex-1">
+                  <input
+                    type="email"
+                    {...register("email")}
+                    placeholder="email@kamu.com"
+                    className="w-full bg-black/20 border border-white/20 rounded-md px-4 py-3 text-sm placeholder:text-white/50 focus:outline-none focus:border-terracotta transition"
+                  />
+                  {errors.email && <p className="mt-1 text-xs text-amber">{errors.email.message}</p>}
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-5 py-3 rounded-md bg-terracotta text-white font-semibold hover:opacity-90 transition disabled:opacity-70"
+                >
+                  {isSubmitting ? "Mendaftar..." : "Daftar Sekarang"}
+                </button>
+              </form>
+            )}
           </div>
         </div>
 
