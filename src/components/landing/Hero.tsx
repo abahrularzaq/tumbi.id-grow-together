@@ -122,15 +122,18 @@ export function Hero() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-12 items-center w-full">
         <div className="reveal">
           <div className="inline-block font-mono text-amber text-xs sm:text-sm uppercase tracking-widest mb-6">
-            ◆ Tumbuh Bersama Si Kecil
+            ◆ Untuk 4.8 juta bayi yang lahir di Indonesia setiap tahun
           </div>
           <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-7xl leading-[0.95] tracking-tight">
-            Tumbuh bersama si kecil, <span className="text-terracotta italic">dipantau</span> dengan benar.
+            Kamu tidak harus jadi dokter anak
+            <br />
+            untuk tahu si kecil <span className="text-terracotta italic">berkembang benar.</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-            Aplikasi pemantau tumbuh kembang anak berdasarkan standar{" "}
-            <span className="text-foreground font-semibold">WHO &amp; IDAI</span>. Pantau pertumbuhan,
-            milestone, dan jadwal imunisasi — semuanya dalam Bahasa Indonesia.
+            Tumbi.id menganalisis milestone anak kamu berdasarkan standar{" "}
+            <span className="text-foreground font-semibold">WHO &amp; IDAI</span>, lalu kasih tahu satu
+            langkah nyata yang bisa dilakukan hari ini. Bukan daftar panjang yang bikin overwhelmed —
+            cukup satu hal yang berarti.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
