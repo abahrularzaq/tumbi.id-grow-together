@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TRUST_BADGES } from "../../constants/landingData";
 import { waitlistSchema } from "../../lib/schemas";
+import { incrementSignupCount, SignupCounter } from "./SignupCounter";
 
 const waitlistEmailKey = "tumbi_waitlist_email";
 const heroEmailSchema = waitlistSchema.pick({ email: true });
@@ -113,6 +114,7 @@ export function Hero() {
     if (typeof window === "undefined") return;
     await new Promise((resolve) => setTimeout(resolve, 400));
     window.localStorage.setItem(waitlistEmailKey, data.email);
+    incrementSignupCount();
     window.dispatchEvent(new Event("tumbi-waitlist-updated"));
     setHeroSubmitted(true);
   }
@@ -148,6 +150,9 @@ export function Hero() {
             >
               Lihat Fitur
             </a>
+          </div>
+          <div className="mt-4">
+            <SignupCounter />
           </div>
           <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-mono uppercase tracking-wider text-muted-foreground">
             {TRUST_BADGES.map((b) => (

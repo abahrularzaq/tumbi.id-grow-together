@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { waitlistSchema, type WaitlistFormData } from "../../lib/schemas";
+import { PostSubmitSurvey } from "./PostSubmitSurvey";
+import { incrementSignupCount, SignupCounter } from "./SignupCounter";
 
 const waitlistEmailKey = "tumbi_waitlist_email";
 
@@ -63,6 +65,7 @@ export function FinalCTA() {
       await new Promise((resolve) => setTimeout(resolve, 800));
       if (typeof window !== "undefined") {
         window.localStorage.setItem(waitlistEmailKey, data.email);
+        incrementSignupCount();
         window.dispatchEvent(new Event("tumbi-waitlist-updated"));
       }
       setStoredEmail(data.email);
@@ -212,6 +215,41 @@ export function FinalCTA() {
               Dengan mendaftar, Anda menyetujui kebijakan privasi kami.
             </p>
           </form>
+          <div className="max-w-2xl mx-auto mt-6 reveal">
+            <div className="flex items-center gap-3 text-white/70">
+              <div className="h-px flex-1 bg-white/20" />
+              <span className="text-xs font-mono uppercase tracking-wider">atau</span>
+              <div className="h-px flex-1 bg-white/20" />
+            </div>
+            <div className="mt-4 rounded-2xl p-5 border border-white/10 bg-white/10 text-left">
+              <div className="text-2xl mb-2">💬</div>
+              <h4 className="font-display font-bold text-2xl text-white">
+                Gabung komunitas orang tua Tumbi.id
+              </h4>
+              <p className="text-white/85 mt-1">
+                Diskusi, tanya jawab, dan dapat update langsung via WhatsApp
+              </p>
+              <p className="text-xs font-mono uppercase tracking-wider text-white/70 mt-3">
+                47 anggota aktif
+              </p>
+              <button
+                type="button"
+                onClick={() =>
+                  window.open(
+                    "https://wa.me/6281234567890?text=Halo, saya mau gabung komunitas Tumbi.id",
+                    "_blank"
+                  )
+                }
+                className="mt-4 w-full sm:w-auto px-6 py-3 rounded-full bg-[#25D366] text-white font-bold hover:opacity-90 transition"
+              >
+                Gabung Grup WhatsApp
+              </button>
+              <p className="text-xs text-white/70 mt-3">Gratis · Bisa keluar kapan saja</p>
+            </div>
+          </div>
+          <div className="mt-5 text-center">
+            <SignupCounter />
+          </div>
         </div>
       </section>
     );
@@ -250,6 +288,13 @@ export function FinalCTA() {
             Ikuti Instagram @tumbi.id untuk tips parenting
           </a>
           <p className="text-xs text-muted-foreground mt-4">Cek email kamu untuk konfirmasi</p>
+          {storedEmail && (
+            <PostSubmitSurvey
+              email={storedEmail}
+              plan={submittedData?.plan ?? null}
+              childAge={submittedData?.childAge ?? null}
+            />
+          )}
         </div>
       </div>
     </section>

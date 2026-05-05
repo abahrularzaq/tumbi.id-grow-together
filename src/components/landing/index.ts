@@ -8,3 +8,5 @@ export { Pricing } from "./Pricing";
 export { FAQ } from "./FAQ";
 export { FinalCTA } from "./FinalCTA";
 export { Footer } from "./Footer";
+export { PostSubmitSurvey } from "./PostSubmitSurvey";
+export { SignupCounter } from "./SignupCounter";
