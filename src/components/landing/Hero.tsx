@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TRUST_BADGES } from "../../constants/landingData";
+import { useAnalytics } from "../../hooks/useAnalytics";
 import { waitlistSchema } from "../../lib/schemas";
 import { incrementSignupCount, SignupCounter } from "./SignupCounter";
 
@@ -96,6 +97,8 @@ function PhoneMockup() {
 
 export function Hero() {
   const [heroSubmitted, setHeroSubmitted] = useState(false);
+  const [hasTrackedFormStart, setHasTrackedFormStart] = useState(false);
+  const { trackCTAClick, trackFormStart, trackFormSubmit } = useAnalytics();
   const {
     register,
     handleSubmit,
@@ -116,6 +119,12 @@ export function Hero() {
     window.localStorage.setItem(waitlistEmailKey, data.email);
     incrementSignupCount();
     window.dispatchEvent(new Event("tumbi-waitlist-updated"));
+    trackFormSubmit({
+      plan: "unknown",
+      childAge: "unknown",
+      hasCustomConcern: false,
+      formLocation: "hero",
+    });
     setHeroSubmitted(true);
   }
 
@@ -140,6 +149,7 @@ export function Hero() {
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href="#daftar"
+              onClick={() => trackCTAClick("hero")}
               className="px-6 py-3.5 bg-terracotta text-white font-bold rounded-md hover:opacity-90 transition shadow-[4px_4px_0_0_rgba(245,240,232,0.15)]"
             >
               Mulai Gratis →
@@ -176,6 +186,12 @@ export function Hero() {
                   <input
                     type="email"
                     {...register("email")}
+                    onFocus={() => {
+                      if (!hasTrackedFormStart) {
+                        trackFormStart("hero");
+                        setHasTrackedFormStart(true);
+                      }
+                    }}
                     placeholder="email@kamu.com"
                     className="w-full bg-black/20 border border-white/20 rounded-md px-4 py-3 text-sm placeholder:text-white/50 focus:outline-none focus:border-terracotta transition"
                   />

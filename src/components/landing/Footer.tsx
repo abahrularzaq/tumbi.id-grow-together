@@ -1,4 +1,8 @@
+import { useAnalytics } from "../../hooks/useAnalytics";
+
 export function Footer() {
+  const { trackCTAClick } = useAnalytics();
+
   return (
     <footer className="bg-background border-t border-border py-10">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
@@ -15,6 +19,7 @@ export function Footer() {
             <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3">
               <a
                 href="#"
+                onClick={() => trackCTAClick("interview")}
                 className="inline-flex w-full sm:w-auto justify-center px-5 py-2.5 rounded-full border border-border text-foreground text-sm font-semibold hover:bg-surface transition"
               >
                 Jadwalkan 15 Menit

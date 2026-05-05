@@ -1,5 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
 
+import { initializeAnalytics } from "../lib/analytics";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -65,5 +67,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  useEffect(() => {
+    initializeAnalytics();
+  }, []);
+
   return <Outlet />;
 }

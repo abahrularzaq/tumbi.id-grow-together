@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAnalytics } from "../../hooks/useAnalytics";
 import type { WaitlistFormData } from "../../lib/schemas";
 
 const voteStorageKey = "tumbi_feature_vote";
@@ -20,6 +21,7 @@ export function PostSubmitSurvey({ email, plan, childAge }: PostSubmitSurveyProp
   const [isVisible, setIsVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<(typeof SURVEY_OPTIONS)[number] | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { trackFeatureVote } = useAnalytics();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -75,7 +77,10 @@ export function PostSubmitSurvey({ email, plan, childAge }: PostSubmitSurveyProp
                 <button
                   key={option}
                   type="button"
-                  onClick={() => setSelectedOption(option)}
+                  onClick={() => {
+                    setSelectedOption(option);
+                    trackFeatureVote(option);
+                  }}
                   className={`text-left rounded-lg px-4 py-3 border transition ${
                     isActive
                       ? "border-terracotta bg-terracotta/10"

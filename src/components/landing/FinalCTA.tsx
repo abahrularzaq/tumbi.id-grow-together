@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useAnalytics } from "../../hooks/useAnalytics";
 import { waitlistSchema, type WaitlistFormData } from "../../lib/schemas";
 import { PostSubmitSurvey } from "./PostSubmitSurvey";
 import { incrementSignupCount, SignupCounter } from "./SignupCounter";
@@ -12,6 +13,9 @@ export function FinalCTA() {
   const [submitted, setSubmitted] = useState(false);
   const [submittedData, setSubmittedData] = useState<WaitlistFormData | null>(null);
   const [storedEmail, setStoredEmail] = useState<string | null>(null);
+  const [hasTrackedFormStart, setHasTrackedFormStart] = useState(false);
+  const { trackCTAClick, trackFormStart, trackPlanSelected, trackAgeSelected, trackFormSubmit } =
+    useAnalytics();
   const {
     register,
     handleSubmit,
@@ -68,6 +72,12 @@ export function FinalCTA() {
         incrementSignupCount();
         window.dispatchEvent(new Event("tumbi-waitlist-updated"));
       }
+      trackFormSubmit({
+        plan: data.plan,
+        childAge: data.childAge,
+        hasCustomConcern: Boolean(data.biggestConcern?.trim()),
+        formLocation: "final_cta",
+      });
       setStoredEmail(data.email);
       setSubmittedData(data);
       setSubmitted(true);
@@ -120,6 +130,12 @@ export function FinalCTA() {
               <input
                 type="email"
                 {...register("email")}
+                onFocus={() => {
+                  if (!hasTrackedFormStart) {
+                    trackFormStart("final_cta");
+                    setHasTrackedFormStart(true);
+                  }
+                }}
                 placeholder="email@kamu.com"
                 className="w-full bg-surface border border-border rounded-md px-4 py-3 focus:outline-none focus:border-terracotta transition"
               />
@@ -133,7 +149,10 @@ export function FinalCTA() {
               <div className="grid sm:grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setValue("plan", "free", { shouldValidate: true })}
+                  onClick={() => {
+                    setValue("plan", "free", { shouldValidate: true });
+                    trackPlanSelected("free");
+                  }}
                   className={`rounded-md px-4 py-3.5 font-semibold border transition ${
                     selectedPlan === "free"
                       ? "bg-terracotta text-white border-terracotta"
@@ -144,7 +163,10 @@ export function FinalCTA() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setValue("plan", "premium", { shouldValidate: true })}
+                  onClick={() => {
+                    setValue("plan", "premium", { shouldValidate: true });
+                    trackPlanSelected("premium");
+                  }}
                   className={`rounded-md px-4 py-3.5 font-semibold border transition ${
                     selectedPlan === "premium"
                       ? "bg-terracotta text-white border-terracotta"
@@ -163,7 +185,9 @@ export function FinalCTA() {
                 Usia Anak
               </label>
               <select
-                {...register("childAge")}
+                {...register("childAge", {
+                  onChange: (event) => trackAgeSelected(String(event.target.value)),
+                })}
                 value={selectedAge ?? ""}
                 className="w-full bg-surface border border-border rounded-md px-4 py-3 focus:outline-none focus:border-terracotta transition"
               >
@@ -234,12 +258,13 @@ export function FinalCTA() {
               </p>
               <button
                 type="button"
-                onClick={() =>
+                onClick={() => {
+                  trackCTAClick("whatsapp");
                   window.open(
                     "https://wa.me/6281234567890?text=Halo, saya mau gabung komunitas Tumbi.id",
                     "_blank"
-                  )
-                }
+                  );
+                }}
                 className="mt-4 w-full sm:w-auto px-6 py-3 rounded-full bg-[#25D366] text-white font-bold hover:opacity-90 transition"
               >
                 Gabung Grup WhatsApp

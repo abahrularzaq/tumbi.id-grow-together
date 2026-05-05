@@ -1,7 +1,9 @@
 import { PRICING_PLANS } from "../../constants/landingData";
+import { useAnalytics } from "../../hooks/useAnalytics";
 
 export function Pricing() {
   const cards = [PRICING_PLANS.free, PRICING_PLANS.premium];
+  const { trackCTAClick } = useAnalytics();
   return (
     <section className="py-24 sm:py-32 bg-[#0a0a0a]">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
@@ -46,6 +48,9 @@ export function Pricing() {
               </ul>
               <a
                 href="#daftar"
+                onClick={() =>
+                  trackCTAClick(c === PRICING_PLANS.free ? "pricing_free" : "pricing_premium")
+                }
                 className={`block text-center py-3.5 rounded-md font-bold transition ${
                   c.featured
                     ? "bg-terracotta text-white hover:opacity-90"
