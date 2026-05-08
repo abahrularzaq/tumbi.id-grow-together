@@ -106,3 +106,46 @@
 
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s ease; }
 .reveal.in { opacity: 1; transform: translateY(0); }
+
+/* DemoSection — scoped scroll-triggered entrance + phone float */
+.demo-reveal-text {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 700ms ease-out, transform 700ms ease-out;
+  will-change: opacity, transform;
+}
+.demo-reveal-text.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.demo-reveal-phone {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 700ms ease-out 200ms, transform 700ms ease-out 200ms;
+  will-change: opacity, transform;
+}
+.demo-reveal-phone.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes phone-float {
+  0%   { transform: translateY(0)     rotate(-1deg); }
+  50%  { transform: translateY(-12px) rotate(1deg); }
+  100% { transform: translateY(0)     rotate(-1deg); }
+}
+.demo-phone-float {
+  animation: phone-float 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-reveal-text,
+  .demo-reveal-phone {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .demo-phone-float { animation: none; }
+}

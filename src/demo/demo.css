@@ -1,0 +1,155 @@
+/* ============================================
+   TUMBI DEMO — ISOLATED CSS SCOPE
+   Semua styles dibungkus dalam .tumbi-demo
+   supaya tidak leak ke landing page
+   ============================================ */
+
+/* 1. RESET DALAM SCOPE DEMO */
+.tumbi-demo {
+  /* Override tema dark landing page */
+  --background: #FDF8F2;
+  --foreground: #2D2D2D;
+  --card: #FFFFFF;
+  --card-foreground: #2D2D2D;
+  --primary: #E07B54;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0EBE5;
+  --secondary-foreground: #7A6E68;
+  --muted: #F0EBE5;
+  --muted-foreground: #7A6E68;
+  --border: #E8E0D8;
+  --radius: 1rem;
+
+  /* 2. CUSTOM TOKENS DEMO */
+  --gold: #E8B86D;
+  --terra: #E07B54;
+  --terra-light: #F4A07A;
+  --sage: #8BAF8D;
+  --sage-dark: #5C7A5E;
+  --lavender: #C9B8E8;
+  --lavender-dark: #8B72BE;
+  --blush: #F2C4CE;
+  --blush-dark: #D97E96;
+  --warm-gray: #7A6E68;
+  --charcoal: #2D2D2D;
+  --cream: #FDF8F2;
+  --peach: #FFE8D6;
+
+  /* 3. BASE STYLES */
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif;
+}
+
+/* 4. SHADOW UTILITIES */
+.tumbi-demo .shadow-soft {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+.tumbi-demo .shadow-card {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* 5. GRADIENT UTILITIES */
+.tumbi-demo .gradient-warm {
+  background: linear-gradient(
+    135deg, #E07B54, #F4A07A, #E8B86D
+  );
+}
+.tumbi-demo .gradient-sage {
+  background: linear-gradient(
+    135deg, #5C7A5E, #8BAF8D
+  );
+}
+.tumbi-demo .gradient-home-hero {
+  background: linear-gradient(
+    135deg, #E07B54 0%, #F4A07A 60%, #E8B86D 100%
+  );
+}
+.tumbi-demo .gradient-growth-header {
+  background: linear-gradient(
+    135deg, #5C7A5E, #8BAF8D
+  );
+}
+.tumbi-demo .gradient-insight-hero {
+  background: linear-gradient(
+    135deg, #8B72BE, #E07B54
+  );
+}
+.tumbi-demo .gradient-insight-weekly {
+  background: linear-gradient(
+    135deg, #F3F0FF, #FFF0F5
+  );
+}
+.tumbi-demo .gradient-insight-premium {
+  background: linear-gradient(
+    135deg, #8B72BE, #E07B54
+  );
+}
+.tumbi-demo .gradient-premium-cta {
+  background: linear-gradient(
+    135deg, #8B72BE, #E07B54
+  );
+}
+
+/* 6. GOLD COLOR UTILITIES */
+.tumbi-demo .bg-gold { background-color: #E8B86D; }
+.tumbi-demo .text-gold { color: #E8B86D; }
+.tumbi-demo .border-gold { border-color: #E8B86D; }
+
+/* 7. SCROLLBAR HIDE */
+.tumbi-demo .scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.tumbi-demo .scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 8. ANIMATIONS */
+@keyframes demo-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.tumbi-demo .demo-shimmer {
+  background: linear-gradient(
+    90deg,
+    #F0EBE5 25%,
+    #E8E0D8 37%,
+    #F0EBE5 63%
+  );
+  background-size: 400px 100%;
+  animation: demo-shimmer 1.4s ease infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tumbi-demo .animate-fade-in {
+  animation: fade-in 0.35s ease forwards;
+}
+
+/* 9. SCROLLABLE CONTENT AREA */
+.tumbi-demo .demo-scroll-area {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 10. OVERRIDE TAILWIND DARK VALUES DALAM SCOPE */
+.tumbi-demo .bg-background {
+  background-color: #FDF8F2 !important;
+}
+.tumbi-demo .bg-card {
+  background-color: #FFFFFF !important;
+}
+.tumbi-demo .text-foreground {
+  color: #2D2D2D !important;
+}
+.tumbi-demo .text-muted-foreground {
+  color: #7A6E68 !important;
+}
+.tumbi-demo .border-border {
+  border-color: #E8E0D8 !important;
+}

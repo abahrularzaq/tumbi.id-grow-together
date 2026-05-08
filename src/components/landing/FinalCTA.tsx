@@ -198,8 +198,9 @@ export function FinalCTA() {
           </div>
 
           <form
+            id="waitlist-form"
             onSubmit={handleSubmit(onSubmit)}
-            className="reveal max-w-2xl mx-auto bg-background text-foreground p-6 sm:p-8 rounded-xl text-left space-y-5 shadow-[8px_8px_0_0_rgba(0,0,0,0.4)]"
+            className="reveal max-w-2xl mx-auto bg-background text-foreground p-6 sm:p-8 rounded-xl text-left space-y-5 shadow-[8px_8px_0_0_rgba(0,0,0,0.4)] scroll-mt-24"
           >
             <div className="text-center space-y-2">
               <h3 className="font-display font-black text-3xl sm:text-4xl text-foreground">

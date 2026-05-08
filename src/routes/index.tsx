@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import {
   FAQ,
+  DemoSection,
   Features,
   FinalCTA,
   Footer,
@@ -52,6 +53,7 @@ function LandingPage() {
       <Marquee />
       <Problems />
       <Features />
+      <DemoSection />
       <Testimonials />
       <Pricing />
       <FAQ />
