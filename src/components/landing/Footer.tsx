@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 import { useAnalytics } from "../../hooks/useAnalytics";
 
 export function Footer() {
@@ -39,17 +41,26 @@ export function Footer() {
           <div className="font-mono text-xs uppercase tracking-widest">
             © 2026 Tumbi.id · Dibuat dengan ❤ di Indonesia
           </div>
-          <div className="flex gap-5 text-xs">
-            <a href="#" className="hover:text-foreground transition">
-              Privasi
-            </a>
-            <a href="#" className="hover:text-foreground transition">
-              Syarat
-            </a>
-            <a href="#" className="hover:text-foreground transition">
-              Kontak
-            </a>
-          </div>
+          <nav
+            className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xs sm:justify-end"
+            aria-label="Tautan legal"
+          >
+            <Link to="/privacy" className="hover:text-foreground transition">
+              Privacy Policy
+            </Link>
+            <span className="text-muted-foreground/60" aria-hidden>
+              ·
+            </span>
+            <Link to="/privacy" hash="kontak" className="hover:text-foreground transition">
+              Terms
+            </Link>
+            <span className="text-muted-foreground/60" aria-hidden>
+              ·
+            </span>
+            <Link to="/privacy" hash="kontak" className="hover:text-foreground transition">
+              Hubungi Kami
+            </Link>
+          </nav>
         </div>
       </div>
     </footer>
