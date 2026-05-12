@@ -1,4 +1,4 @@
-import { PRICING_PLANS } from "../../constants/landingData";
+import { PRICING_PLANS, TUMBI_APP_AUTH_URL } from "../../constants/landingData";
 import { useAnalytics } from "../../hooks/useAnalytics";
 
 export function Pricing() {
@@ -47,7 +47,7 @@ export function Pricing() {
                 ))}
               </ul>
               <a
-                href="#daftar"
+                href={TUMBI_APP_AUTH_URL}
                 onClick={() =>
                   trackCTAClick(c === PRICING_PLANS.free ? "pricing_free" : "pricing_premium")
                 }

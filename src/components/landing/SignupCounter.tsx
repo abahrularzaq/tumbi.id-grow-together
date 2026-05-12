@@ -87,8 +87,11 @@ export function SignupCounter() {
   }, [count, hasAnimated]);
 
   return (
-    <p ref={wrapperRef} className="font-mono text-xs text-muted-foreground">
-      🌱 {displayCount} orang tua sudah mendaftar akses awal
+    <p ref={wrapperRef} className="font-mono text-xs text-muted-foreground leading-relaxed">
+      <span className="block">
+        🌱 {displayCount} orang tua sudah mulai memantau
+      </span>
+      <span className="block">si kecil dengan Tumbi.id</span>
     </p>
   );
 }

@@ -10,7 +10,8 @@ type CTALocation =
   | "pricing_premium"
   | "final_cta"
   | "whatsapp"
-  | "interview";
+  | "interview"
+  | "demo";
 
 type FormLocation = "hero" | "final_cta";
 type Plan = "free" | "premium";

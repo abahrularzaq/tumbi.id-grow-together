@@ -1,4 +1,6 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { TUMBI_APP_AUTH_URL } from "../../constants/landingData";
+import { useAnalytics } from "../../hooks/useAnalytics";
 import { DemoSkeleton } from "../../demo/DemoSkeleton";
 
 const TumbiDemoApp = lazy(() => import("../../demo/TumbiDemoApp"));
@@ -21,6 +23,7 @@ function PhoneFallback() {
 export function DemoSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [inView, setInView] = useState(false);
+  const { trackCTAClick } = useAnalytics();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -45,15 +48,6 @@ export function DemoSection() {
 
     io.observe(el);
     return () => io.disconnect();
-  }, []);
-
-  const handleCtaClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    if (typeof document === "undefined") return;
-    const target =
-      document.getElementById("waitlist-form") ?? document.getElementById("daftar");
-    if (!target) return;
-    target.scrollIntoView({ behavior: "smooth", block: "center" });
   }, []);
 
   return (
@@ -94,24 +88,15 @@ export function DemoSection() {
                 </li>
               ))}
             </ul>
-
-            <div className="mt-10">
-              <button
-                type="button"
-                onClick={handleCtaClick}
-                className="inline-flex items-center justify-center px-6 py-3.5 bg-terracotta text-white font-bold rounded-md hover:opacity-90 transition shadow-[4px_4px_0_0_rgba(245,240,232,0.12)]"
-              >
-                Daftar Akses Awal →
-              </button>
-            </div>
           </div>
 
           <div
-            className={`demo-reveal-phone flex justify-center lg:justify-end ${
+            className={`demo-reveal-phone flex flex-col items-center lg:items-end w-full ${
               inView ? "is-visible" : ""
             }`}
           >
-            <div className="demo-phone-float relative">
+            <div className="flex justify-center lg:justify-end w-full">
+              <div className="demo-phone-float relative">
               <div
                 className="absolute -top-4 -right-4 z-20 inline-flex items-center gap-2 rounded-full border border-amber/30 bg-amber/20 px-3 py-1.5 font-mono text-xs text-amber animate-bounce"
                 style={{ animationDuration: "1.8s" }}
@@ -145,6 +130,20 @@ export function DemoSection() {
                   </div>
                 </div>
               </div>
+            </div>
+            </div>
+
+            <div className="mt-10 w-full max-w-[390px] text-center lg:text-right px-1">
+              <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                Ini data demo. App kamu akan menampilkan data anak kamu sendiri.
+              </p>
+              <a
+                href={TUMBI_APP_AUTH_URL}
+                onClick={() => trackCTAClick("demo")}
+                className="inline-flex items-center justify-center px-6 py-3.5 bg-terracotta text-white font-bold rounded-md hover:opacity-90 transition shadow-[4px_4px_0_0_rgba(245,240,232,0.12)]"
+              >
+                Coba dengan Data Saya →
+              </a>
             </div>
           </div>
         </div>

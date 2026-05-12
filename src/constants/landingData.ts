@@ -1,3 +1,6 @@
+/** Cloudflare Workers app — sign up / sign in */
+export const TUMBI_APP_AUTH_URL = "https://tumbi-app.tumbi-app.workers.dev/auth";
+
 export interface ProblemItem {
   headline: string;
   body: string;
@@ -143,7 +146,7 @@ export const PRICING_PLANS: PricingPlans = {
     price: "Rp0",
     sub: "Selamanya, tanpa kartu kredit.",
     features: ["1 profil anak", "Growth chart WHO", "Pengingat imunisasi", "Milestone tracker"],
-    ctaText: "Mulai Gratis",
+    ctaText: "Daftar & Mulai Sekarang",
     featured: false,
   },
   premium: {
@@ -158,7 +161,7 @@ export const PRICING_PLANS: PricingPlans = {
       "Akses komunitas premium",
       "Priority support",
     ],
-    ctaText: "Coba Premium",
+    ctaText: "Mulai Gratis, Upgrade Kapan Saja",
     featured: true,
   },
 };

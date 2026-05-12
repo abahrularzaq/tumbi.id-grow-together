@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { TRUST_BADGES } from "../../constants/landingData";
+import { TRUST_BADGES, TUMBI_APP_AUTH_URL } from "../../constants/landingData";
 import { useAnalytics } from "../../hooks/useAnalytics";
 import { waitlistSchema } from "../../lib/schemas";
 import { incrementSignupCount, SignupCounter } from "./SignupCounter";
@@ -141,18 +141,17 @@ export function Hero() {
             untuk tahu si kecil <span className="text-terracotta italic">berkembang benar.</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-            Tumbi.id menganalisis milestone anak kamu berdasarkan standar{" "}
-            <span className="text-foreground font-semibold">WHO &amp; IDAI</span>, lalu kasih tahu satu
-            langkah nyata yang bisa dilakukan hari ini. Bukan daftar panjang yang bikin overwhelmed —
-            cukup satu hal yang berarti.
+            Sudah bisa dipakai hari ini.
+            <br />
+            Gratis. Tanpa kartu kredit.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href="#daftar"
+              href={TUMBI_APP_AUTH_URL}
               onClick={() => trackCTAClick("hero")}
               className="px-6 py-3.5 bg-terracotta text-white font-bold rounded-md hover:opacity-90 transition shadow-[4px_4px_0_0_rgba(245,240,232,0.15)]"
             >
-              Mulai Gratis →
+              Mulai Gratis Sekarang →
             </a>
             <a
               href="#features"
