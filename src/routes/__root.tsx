@@ -1,6 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
 
+import { OG_IMAGE_HEIGHT, OG_IMAGE_URL, OG_IMAGE_WIDTH, SITE_URL } from "../constants/site";
 import { initializeAnalytics } from "../lib/analytics";
 import appCss from "../styles.css?url";
 
@@ -37,8 +38,13 @@ export const Route = createRootRoute({
       { property: "og:title", content: "Tumbi.id — Tumbuh Bersama Si Kecil" },
       { property: "og:description", content: "Pantau tumbuh kembang si kecil dengan standar WHO & IDAI. Gratis untuk memulai." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { property: "og:url", content: `${SITE_URL}/` },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { property: "og:image:width", content: String(OG_IMAGE_WIDTH) },
+      { property: "og:image:height", content: String(OG_IMAGE_HEIGHT) },
+      { property: "og:image:alt", content: "Tumbi.id — Tumbuh Bersama Si Kecil" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: OG_IMAGE_URL },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
