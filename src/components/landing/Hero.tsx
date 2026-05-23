@@ -1,14 +1,6 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { TRUST_BADGES, TUMBI_APP_AUTH_URLS } from "../../constants/landingData";
 import { useAnalytics } from "../../hooks/useAnalytics";
-import { waitlistSchema } from "../../lib/schemas";
-import { incrementSignupCount, SignupCounter } from "./SignupCounter";
-
-const waitlistEmailKey = "tumbi_waitlist_email";
-const heroEmailSchema = waitlistSchema.pick({ email: true });
-type HeroEmailData = { email: string };
+import { SignupCounter } from "./SignupCounter";
 
 function PhoneMockup() {
   return (
@@ -96,37 +88,7 @@ function PhoneMockup() {
 }
 
 export function Hero() {
-  const [heroSubmitted, setHeroSubmitted] = useState(false);
-  const [hasTrackedFormStart, setHasTrackedFormStart] = useState(false);
-  const { trackCTAClick, trackFormStart, trackFormSubmit } = useAnalytics();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<HeroEmailData>({
-    resolver: zodResolver(heroEmailSchema),
-    defaultValues: { email: "" },
-  });
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setHeroSubmitted(Boolean(window.localStorage.getItem(waitlistEmailKey)));
-  }, []);
-
-  async function onSubmit(data: HeroEmailData) {
-    if (typeof window === "undefined") return;
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    window.localStorage.setItem(waitlistEmailKey, data.email);
-    incrementSignupCount();
-    window.dispatchEvent(new Event("tumbi-waitlist-updated"));
-    trackFormSubmit({
-      plan: "unknown",
-      childAge: "unknown",
-      hasCustomConcern: false,
-      formLocation: "hero",
-    });
-    setHeroSubmitted(true);
-  }
+  const { trackCTAClick } = useAnalytics();
 
   return (
     <section id="top" className="relative min-h-[100svh] flex items-center pt-10 pb-16">
@@ -160,16 +122,6 @@ export function Hero() {
               Lihat Fitur
             </a>
           </div>
-          <div className="mt-4">
-            <SignupCounter />
-          </div>
-          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-mono uppercase tracking-wider text-muted-foreground">
-            {TRUST_BADGES.map((b) => (
-              <span key={b.label}>
-                {b.icon} {b.label}
-              </span>
-            ))}
-          </div>
           <button
             type="button"
             onClick={() =>
@@ -185,41 +137,15 @@ export function Hero() {
               →
             </span>
           </button>
-          <div className="mt-6 max-w-md mx-auto lg:mx-0">
-            {heroSubmitted ? (
-              <p className="inline-flex items-center gap-2 text-sm font-semibold text-sage">
-                <span className="w-5 h-5 rounded-full bg-sage/20 grid place-items-center">✓</span> Berhasil!
-                Cek email kamu.
-              </p>
-            ) : (
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex flex-col sm:flex-row gap-3 w-full"
-              >
-                <div className="flex-1">
-                  <input
-                    type="email"
-                    {...register("email")}
-                    onFocus={() => {
-                      if (!hasTrackedFormStart) {
-                        trackFormStart("hero");
-                        setHasTrackedFormStart(true);
-                      }
-                    }}
-                    placeholder="email@kamu.com"
-                    className="w-full bg-black/20 border border-white/20 rounded-md px-4 py-3 text-sm placeholder:text-white/50 focus:outline-none focus:border-terracotta transition"
-                  />
-                  {errors.email && <p className="mt-1 text-xs text-amber">{errors.email.message}</p>}
-                </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-5 py-3 rounded-md bg-terracotta text-white font-semibold hover:opacity-90 transition disabled:opacity-70"
-                >
-                  {isSubmitting ? "Mendaftar..." : "Daftar Sekarang"}
-                </button>
-              </form>
-            )}
+          <div className="mt-4">
+            <SignupCounter />
+          </div>
+          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-mono uppercase tracking-wider text-muted-foreground">
+            {TRUST_BADGES.map((b) => (
+              <span key={b.label}>
+                {b.icon} {b.label}
+              </span>
+            ))}
           </div>
         </div>
 
