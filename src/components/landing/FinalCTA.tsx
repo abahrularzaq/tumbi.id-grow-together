@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAnalytics } from "../../hooks/useAnalytics";
-import { TUMBI_APP_AUTH_URL } from "../../constants/landingData";
+import { TUMBI_APP_AUTH_URLS } from "../../constants/landingData";
 import { PostSubmitSurvey } from "./PostSubmitSurvey";
 import { SignupCounter } from "./SignupCounter";
 
@@ -48,7 +48,7 @@ export function FinalCTA() {
               Si kecil menunggu untuk dipantau.
             </h2>
             <a
-              href={TUMBI_APP_AUTH_URL}
+              href={TUMBI_APP_AUTH_URLS.final_cta}
               onClick={() => trackCTAClick("final_cta")}
               className="inline-flex items-center justify-center px-8 py-4 bg-white text-terracotta font-bold text-lg rounded-md hover:opacity-90 transition shadow-[8px_8px_0_0_rgba(0,0,0,0.25)]"
             >
@@ -117,7 +117,7 @@ export function FinalCTA() {
             </p>
           )}
           <a
-            href={TUMBI_APP_AUTH_URL}
+            href={TUMBI_APP_AUTH_URLS.final_cta}
             onClick={() => trackCTAClick("final_cta")}
             className="inline-flex w-full justify-center bg-terracotta text-white font-bold py-3.5 rounded-md hover:opacity-90 transition mb-4"
           >

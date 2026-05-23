@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import {
+  EbookSection,
   FAQ,
   DemoSection,
   Features,
@@ -56,6 +57,7 @@ function LandingPage() {
       <DemoSection />
       <Testimonials />
       <Pricing />
+      <EbookSection />
       <FAQ />
       <FinalCTA />
       <Footer />

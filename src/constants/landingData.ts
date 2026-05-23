@@ -1,5 +1,23 @@
 /** Cloudflare Workers app — sign up / sign in */
-export const TUMBI_APP_AUTH_URL = "https://tumbi-app.tumbi-app.workers.dev/auth";
+export const TUMBI_APP_AUTH_BASE = "https://tumbi-app.tumbi-app.workers.dev/auth";
+
+export const TUMBI_APP_AUTH_URLS = {
+  hero: `${TUMBI_APP_AUTH_BASE}?source=hero`,
+  pricing_free: `${TUMBI_APP_AUTH_BASE}?source=pricing_free`,
+  pricing_premium: `${TUMBI_APP_AUTH_BASE}?source=pricing_premium`,
+  ebook: `${TUMBI_APP_AUTH_BASE}?source=ebook`,
+  final_cta: `${TUMBI_APP_AUTH_BASE}?source=final_cta`,
+  navbar: `${TUMBI_APP_AUTH_BASE}?source=navbar`,
+} as const;
+
+/** @deprecated Prefer TUMBI_APP_AUTH_URLS with a source key */
+export const TUMBI_APP_AUTH_URL = TUMBI_APP_AUTH_BASE;
+
+/** Ebook lead magnet — auth with source tracking */
+export const EBOOK_AUTH_URL = TUMBI_APP_AUTH_URLS.ebook;
+
+/** Update manually for social proof under ebook CTA */
+export const EBOOK_DOWNLOAD_COUNT = 248;
 
 export interface ProblemItem {
   headline: string;

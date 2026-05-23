@@ -11,7 +11,8 @@ type CTALocation =
   | "final_cta"
   | "whatsapp"
   | "interview"
-  | "demo";
+  | "demo"
+  | "ebook";
 
 type FormLocation = "hero" | "final_cta";
 type Plan = "free" | "premium";

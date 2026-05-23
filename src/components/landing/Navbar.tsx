@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TUMBI_APP_AUTH_URL } from "../../constants/landingData";
+import { TUMBI_APP_AUTH_URLS } from "../../constants/landingData";
 
 function useReveal() {
   useEffect(() => {
@@ -31,7 +31,7 @@ export function Navbar() {
           <span className="font-display tracking-tight">Tumbi.id</span>
         </a>
         <a
-          href={TUMBI_APP_AUTH_URL}
+          href={TUMBI_APP_AUTH_URLS.navbar}
           className="inline-flex items-center px-5 py-2.5 rounded-md bg-terracotta text-white font-semibold text-sm hover:opacity-90 transition shadow-[3px_3px_0_0_rgba(0,0,0,0.4)]"
         >
           Mulai Gratis

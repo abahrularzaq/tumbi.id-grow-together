@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { TRUST_BADGES, TUMBI_APP_AUTH_URL } from "../../constants/landingData";
+import { TRUST_BADGES, TUMBI_APP_AUTH_URLS } from "../../constants/landingData";
 import { useAnalytics } from "../../hooks/useAnalytics";
 import { waitlistSchema } from "../../lib/schemas";
 import { incrementSignupCount, SignupCounter } from "./SignupCounter";
@@ -147,7 +147,7 @@ export function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href={TUMBI_APP_AUTH_URL}
+              href={TUMBI_APP_AUTH_URLS.hero}
               onClick={() => trackCTAClick("hero")}
               className="px-6 py-3.5 bg-terracotta text-white font-bold rounded-md hover:opacity-90 transition shadow-[4px_4px_0_0_rgba(245,240,232,0.15)]"
             >
@@ -170,6 +170,21 @@ export function Hero() {
               </span>
             ))}
           </div>
+          <button
+            type="button"
+            onClick={() =>
+              document.querySelector("#ebook-section")?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="mt-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-left bg-[rgba(255,183,0,0.08)] border border-[rgba(255,183,0,0.2)] hover:bg-[rgba(255,183,0,0.12)] transition cursor-pointer"
+          >
+            <span aria-hidden>📚</span>
+            <span className="text-xs text-amber/80">
+              Dapat ebook milestone gratis saat daftar
+            </span>
+            <span className="text-amber shrink-0" aria-hidden>
+              →
+            </span>
+          </button>
           <div className="mt-6 max-w-md mx-auto lg:mx-0">
             {heroSubmitted ? (
               <p className="inline-flex items-center gap-2 text-sm font-semibold text-sage">

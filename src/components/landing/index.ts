@@ -6,6 +6,7 @@ export { Features } from "./Features";
 export { DemoSection } from "./DemoSection";
 export { Testimonials } from "./Testimonials";
 export { Pricing } from "./Pricing";
+export { EbookSection } from "./EbookSection";
 export { FAQ } from "./FAQ";
 export { FinalCTA } from "./FinalCTA";
 export { Footer } from "./Footer";
